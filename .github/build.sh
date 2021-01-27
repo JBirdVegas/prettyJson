@@ -5,6 +5,8 @@ function build() {
 command -v go
 go version
 env
+ls -lah "$GOROOT"
+ls -lah /opt/hostedtoolcache/go
 
 build windows 386
 build darwin amd64
