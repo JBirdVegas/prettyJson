@@ -12,21 +12,21 @@ jobs:
           go-version: '^1.15.6'
       - run: go version
       - name: go build linux/amd64
-        run: go build -ldflags="-s -w" -o out/prettyJson .
+        run: go build -ldflags="-s -w" -o out/linux/amd64/prettyJson .
         env:
           GOOS: linux
           GOARCH: amd64
       - name: go build darwin/amd64
-        run: go build -ldflags="-s -w" -o out/prettyJson .
+        run: go build -ldflags="-s -w" -o out/darwin/amd64/prettyJson .
         env:
           GOOS: darwin
           GOARCH: amd64
       - name: go build windows/386
-        run: go build -ldflags="-s -w" -o out/prettyJson .
+        run: go build -ldflags="-s -w" -o out/windows/386/prettyJson .
         env:
           GOOS: windows
           GOARCH: 386
       - uses: actions/upload-artifact@main
         with:
           name: github governance artifacts
-          path: out/prettyJson
+          path: out/**/prettyJson
