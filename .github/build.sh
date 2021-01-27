@@ -1,4 +1,4 @@
-func build() {
+function build() {
     go build -ldflags="-s -w" -o out/$1/$2/prettyJson .
 }
 
