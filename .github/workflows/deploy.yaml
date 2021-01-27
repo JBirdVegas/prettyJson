@@ -12,17 +12,22 @@ jobs:
           go-version: '^1.15.6'
       - run: go version
       - name: go build linux/amd64
-        run: go build -ldflags="-s -w" -o out/linux/amd64/prettyJson .
+        with:
+          builder:  go build -ldflags="-s -w" -o out/linux/amd64/prettyJson .
         env:
           GOOS: linux
           GOARCH: amd64
       - name: go build darwin/amd64
-        run: go build -ldflags="-s -w" -o out/darwin/amd64/prettyJson .
+        uses: skx/github-action-build@master
+        with:
+          builder: go build -ldflags="-s -w" -o out/darwin/amd64/prettyJson .
         env:
           GOOS: darwin
           GOARCH: amd64
-      - name: go build windows/386
-        run: go build -ldflags="-s -w" -o out/windows/386/prettyJson .
+      - name: Generate windows/386
+        uses: skx/github-action-build@master
+        with:
+          builder: go build -ldflags="-s -w" -o out/windows/386/prettyJson .
         env:
           GOOS: windows
           GOARCH: 386
