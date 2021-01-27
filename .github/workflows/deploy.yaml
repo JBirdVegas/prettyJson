@@ -22,4 +22,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
+          releaseId: 0.1
           args: out/darwin/amd64/prettyJson out/linux/amd64/prettyJson out/windows/386/prettyJson
