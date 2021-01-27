@@ -10,11 +10,9 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '^1.15.6'
-      - run: go version
+      - run: .github/build.sh
       - name: build go binaries
         uses: skx/github-action-build@master
-        with:
-          builder: .github/build.sh
       - uses: actions/upload-artifact@main
         with:
           name: github governance artifacts
