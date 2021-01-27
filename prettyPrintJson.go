@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"flag"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,6 +16,10 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
+	fileFlag := flag.String("file", "", "json file to pretty print")
+	flag.Parse()
+
 	args := os.Args[1:len(os.Args)]
 
 	info, err := os.Stdin.Stat()
@@ -23,7 +28,12 @@ func main() {
 	}
 	if info.Size() == 0 {
 		for _, arg := range args {
-			if _, err := os.Stat(arg); !os.IsNotExist(err) {
+			if fileFlag != nil && *fileFlag != "" {
+				contents, err := ioutil.ReadFile(*fileFlag)
+				checkError(err)
+				prettyPrintBytes(contents)
+				break
+			} else if _, err := os.Stat(arg); !os.IsNotExist(err) {
 				contents, err := ioutil.ReadFile(arg)
 				checkError(err)
 				prettyPrintBytes(contents)
