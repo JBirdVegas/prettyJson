@@ -1,5 +1,5 @@
 function build() {
-    go build -ldflags="-s -w" -o out/$1/$2/prettyJson .
+    go build -ldflags="-s -w" -o "out/$1/$2/prettyJson" .
 }
 
 build windows 386
