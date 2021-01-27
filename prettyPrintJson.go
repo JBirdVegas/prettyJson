@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -18,6 +19,7 @@ func main() {
 	}()
 
 	fileFlag := flag.String("file", "", "json file to pretty print")
+	collapse := flag.Bool("collapse", false, "unpretty print json")
 	flag.Parse()
 
 	args := os.Args[1:len(os.Args)]
@@ -28,22 +30,24 @@ func main() {
 	}
 	if info.Size() == 0 {
 		for _, arg := range args {
-			if fileFlag != nil && *fileFlag != "" {
+			if strings.Contains(arg, "collapse") {
+				continue
+			} else if fileFlag != nil && *fileFlag != "" {
 				contents, err := ioutil.ReadFile(*fileFlag)
 				checkError(err)
-				prettyPrintBytes(contents)
+				prettyPrintBytes(contents, *collapse)
 				break
 			} else if _, err := os.Stat(arg); !os.IsNotExist(err) {
 				contents, err := ioutil.ReadFile(arg)
 				checkError(err)
-				prettyPrintBytes(contents)
+				prettyPrintBytes(contents, *collapse)
 			} else {
 				var f interface{}
 				err := json.Unmarshal([]byte(arg), &f)
 				if err != nil {
 					panic(err)
 				}
-				prettyPrintObject(f)
+				prettyPrintObject(f, *collapse)
 			}
 		}
 		return
@@ -52,7 +56,7 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 	allData, err := ioutil.ReadAll(reader)
 	checkError(err)
-	prettyPrintBytes(allData)
+	prettyPrintBytes(allData, *collapse)
 }
 
 func checkError(err error) {
@@ -61,17 +65,22 @@ func checkError(err error) {
 	}
 }
 
-func prettyPrintObject(data interface{}) {
+func prettyPrintObject(data interface{}, indent bool) {
 	d, err := json.Marshal(data)
 	checkError(err)
-	prettyPrintBytes(d)
+	prettyPrintBytes(d, indent)
 }
 
-func prettyPrintBytes(data []byte) {
-	var prettyJSON bytes.Buffer
-	err := json.Indent(&prettyJSON, data, "", "    ")
-	checkError(err)
-	_, err = os.Stdout.WriteString(prettyJSON.String())
+func prettyPrintBytes(data []byte, collapse bool) {
+	prettyJSON := new(bytes.Buffer)
+	if collapse {
+		err := json.Compact(prettyJSON, data)
+		checkError(err)
+	} else {
+		err := json.Indent(prettyJSON, data, "", "    ")
+		checkError(err)
+	}
+	_, err := os.Stdout.WriteString(prettyJSON.String())
 	checkError(err)
 	_, err = os.Stdout.WriteString(LineBreak)
 	checkError(err)

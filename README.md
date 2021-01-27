@@ -32,3 +32,25 @@ Example usage:
     "Hello": "World"
 }
 ```
+ 
+This app can also be used to collapse json
+
+```shell
+% cat test.json 
+{
+  "Testing": true,
+  "Hello": "World"
+}
+
+% ./prettyJson -collapse "$(cat test.json)"
+{"Hello":"World","Testing":true}
+
+% cat test.json | ./prettyJson -collapse   
+{"Testing":true,"Hello":"World"}
+
+% ./prettyJson -collapse -file test.json
+{"Testing":true,"Hello":"World"}
+
+% ./prettyJson -collapse test.json 
+{"Testing":true,"Hello":"World"}   
+```
