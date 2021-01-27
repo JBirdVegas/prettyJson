@@ -23,12 +23,18 @@ func main() {
 	}
 	if info.Size() == 0 {
 		for _, arg := range args {
-			var f interface{}
-			err := json.Unmarshal([]byte(arg), &f)
-			if err != nil {
-				panic(err)
+			if _, err := os.Stat(arg); !os.IsNotExist(err) {
+				contents, err := ioutil.ReadFile(arg)
+				checkError(err)
+				prettyPrintBytes(contents)
+			} else {
+				var f interface{}
+				err := json.Unmarshal([]byte(arg), &f)
+				if err != nil {
+					panic(err)
+				}
+				prettyPrintObject(f)
 			}
-			prettyPrintObject(f)
 		}
 		return
 	}
