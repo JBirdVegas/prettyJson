@@ -12,15 +12,15 @@ import (
 )
 
 func main() {
+	fileFlag := flag.String("file", "", "json file to pretty print")
+	collapse := flag.Bool("collapse", false, "unpretty print json")
+	flag.Parse()
+
 	defer func() {
 		if r := recover(); r != nil {
 			os.Exit(1)
 		}
 	}()
-
-	fileFlag := flag.String("file", "", "json file to pretty print")
-	collapse := flag.Bool("collapse", false, "unpretty print json")
-	flag.Parse()
 
 	args := os.Args[1:len(os.Args)]
 
