@@ -19,6 +19,9 @@ const (
 	shortHand              = " (shorthand)"
 )
 
+var AppVersion = "development"
+var AppBuildTime = "unknown"
+
 var fileFlag = flag.String("file", "", fileArgDescription)
 var collapse = flag.Bool("collapse", false, collapseArgDescription)
 var version = flag.Bool("version", false, versionArgDescription)
@@ -34,7 +37,7 @@ func main() {
 
 	if *version {
 		filename := filepath.Base(os.Args[0])
-		println(fmt.Sprintf("%s: (%s) %s", filename, prettyJson.AppBuildTime, prettyJson.AppVersion))
+		println(fmt.Sprintf("%s: (%s) %s", filename, AppBuildTime, AppVersion))
 	}
 
 	defer func() {
