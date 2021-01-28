@@ -72,6 +72,13 @@ func prettyPrintObject(data interface{}, indent bool) {
 }
 
 func prettyPrintBytes(data []byte, collapse bool) {
+	s := createNewJsonString(data, collapse).String()
+	_, err := os.Stdout.WriteString(s)
+	checkError(err)
+
+}
+
+func createNewJsonString(data []byte, collapse bool) *bytes.Buffer {
 	prettyJSON := new(bytes.Buffer)
 	if collapse {
 		err := json.Compact(prettyJSON, data)
@@ -80,8 +87,6 @@ func prettyPrintBytes(data []byte, collapse bool) {
 		err := json.Indent(prettyJSON, data, "", "    ")
 		checkError(err)
 	}
-	_, err := os.Stdout.WriteString(prettyJSON.String())
-	checkError(err)
-	_, err = os.Stdout.WriteString(LineBreak)
-	checkError(err)
+	prettyJSON.Write([]byte(LineBreak))
+	return prettyJSON
 }
