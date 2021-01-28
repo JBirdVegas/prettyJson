@@ -4,28 +4,39 @@ import (
 	"bufio"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/jbirdvegas/prettyJson/prettyJson"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 const (
 	fileArgDescription     = "json file to pretty print"
 	collapseArgDescription = "unpretty print json"
+	versionArgDescription  = "prints this program's version"
 	shortHand              = " (shorthand)"
 )
 
 var fileFlag = flag.String("file", "", fileArgDescription)
 var collapse = flag.Bool("collapse", false, collapseArgDescription)
+var version = flag.Bool("version", false, versionArgDescription)
 
 func init() {
 	flag.StringVar(fileFlag, "f", "", fileArgDescription+shortHand)
 	flag.BoolVar(collapse, "c", false, collapseArgDescription+shortHand)
+	flag.BoolVar(version, "v", false, versionArgDescription+shortHand)
 }
 
 func main() {
 	flag.Parse()
+
+	if *version {
+		filename := filepath.Base(os.Args[0])
+		println(fmt.Sprintf("%s: (%s) %s", filename, prettyJson.AppBuildTime, prettyJson.AppVersion))
+	}
+
 	defer func() {
 		if r := recover(); r != nil {
 			os.Exit(1)

@@ -7,18 +7,21 @@ go test ./prettyJson/.
 rm -rf out
 
 function build() {
+    cpus=$(getconf _NPROCESSORS_ONLN)
+
     out_dir="out/$1/$2"
     mkdir -p "$out_dir"
     GOOS=$1 GOARCH=$2 \
         go build \
+        -ldflags "-X main.AppVersion=0.0.1 -X 'prettyJson.AppBuildTime=$(date)'" \
         -ldflags="-s -w" \
-        -gcflags=all=-trimpath="$PWD" \
-        -asmflags=all=-trimpath="$PWD" \
+        -p "$cpus" \
+        -trimpath \
         -o "$out_dir" \
         ./...
 }
 
-build windows 386
+build windows amd64
 build darwin amd64
 build linux amd64
 
