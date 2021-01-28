@@ -2,7 +2,7 @@ name: Build and publish
 on:
   push:
     branches:
-      - * #  release:
+      - '*' #  release:
 #    types: [created]
 jobs:
   run-build-then-publish:
