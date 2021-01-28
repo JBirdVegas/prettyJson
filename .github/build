@@ -2,12 +2,20 @@
 
 set -e
 
-go test .
+go test ./prettyJson/.
 
 rm -rf out
 
 function build() {
-    go build -ldflags="-s -w" -o "out/$1/$2/prettyJson" .
+    out_dir="out/$1/$2"
+    mkdir -p "$out_dir"
+    GOOS=$1 GOARCH=$2 \
+        go build \
+        -ldflags="-s -w" \
+        -gcflags=all=-trimpath="$PWD" \
+        -asmflags=all=-trimpath="$PWD" \
+        -o "$out_dir" \
+        ./...
 }
 
 build windows 386
@@ -16,4 +24,4 @@ build linux amd64
 
 pushd out >/dev/null || :
 zip -qq -r prettyJson.zip *
-popd  >/dev/null || :
+popd >/dev/null || :

@@ -2,11 +2,10 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"flag"
+	"github.com/jbirdvegas/prettyJson/prettyJson"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 )
@@ -34,20 +33,20 @@ func main() {
 				continue
 			} else if fileFlag != nil && *fileFlag != "" {
 				contents, err := ioutil.ReadFile(*fileFlag)
-				checkError(err)
-				prettyPrintBytes(contents, *collapse)
+				prettyJson.CheckError(err)
+				prettyJson.PrettyPrintBytes(contents, *collapse)
 				break
 			} else if _, err := os.Stat(arg); !os.IsNotExist(err) {
 				contents, err := ioutil.ReadFile(arg)
-				checkError(err)
-				prettyPrintBytes(contents, *collapse)
+				prettyJson.CheckError(err)
+				prettyJson.PrettyPrintBytes(contents, *collapse)
 			} else {
 				var f interface{}
 				err := json.Unmarshal([]byte(arg), &f)
 				if err != nil {
 					panic(err)
 				}
-				prettyPrintObject(f, *collapse)
+				prettyJson.PrettyPrintObject(f, *collapse)
 			}
 		}
 		return
@@ -55,38 +54,6 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	allData, err := ioutil.ReadAll(reader)
-	checkError(err)
-	prettyPrintBytes(allData, *collapse)
-}
-
-func checkError(err error) {
-	if err != nil {
-		log.Panic(err)
-	}
-}
-
-func prettyPrintObject(data interface{}, indent bool) {
-	d, err := json.Marshal(data)
-	checkError(err)
-	prettyPrintBytes(d, indent)
-}
-
-func prettyPrintBytes(data []byte, collapse bool) {
-	s := createNewJsonString(data, collapse).String()
-	_, err := os.Stdout.WriteString(s)
-	checkError(err)
-
-}
-
-func createNewJsonString(data []byte, collapse bool) *bytes.Buffer {
-	prettyJSON := new(bytes.Buffer)
-	if collapse {
-		err := json.Compact(prettyJSON, data)
-		checkError(err)
-	} else {
-		err := json.Indent(prettyJSON, data, "", "    ")
-		checkError(err)
-	}
-	prettyJSON.Write([]byte(LineBreak))
-	return prettyJSON
+	prettyJson.CheckError(err)
+	prettyJson.PrettyPrintBytes(allData, *collapse)
 }
