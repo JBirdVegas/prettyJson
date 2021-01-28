@@ -10,11 +10,22 @@ import (
 	"strings"
 )
 
-func main() {
-	fileFlag := flag.String("file", "", "json file to pretty print")
-	collapse := flag.Bool("collapse", false, "unpretty print json")
-	flag.Parse()
+const (
+	fileArgDescription     = "json file to pretty print"
+	collapseArgDescription = "unpretty print json"
+	shortHand              = " (shorthand)"
+)
 
+var fileFlag = flag.String("file", "", fileArgDescription)
+var collapse = flag.Bool("collapse", false, collapseArgDescription)
+
+func init() {
+	flag.StringVar(fileFlag, "f", "", fileArgDescription+shortHand)
+	flag.BoolVar(collapse, "c", false, collapseArgDescription+shortHand)
+}
+
+func main() {
+	flag.Parse()
 	defer func() {
 		if r := recover(); r != nil {
 			os.Exit(1)
