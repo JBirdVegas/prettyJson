@@ -13,27 +13,33 @@ func CheckError(err error) {
 	}
 }
 
-func PrettyPrintObject(data interface{}, indent bool) {
+func PrettyPrintObject(data interface{}, indent bool, addColor bool) {
 	d, err := json.Marshal(data)
 	CheckError(err)
-	PrettyPrintBytes(d, indent)
+	PrettyPrintBytes(d, indent, addColor)
 }
 
-func PrettyPrintBytes(data []byte, collapse bool) {
-	s := createNewJsonString(data, collapse).String()
+func PrettyPrintBytes(data []byte, collapse bool, addColor bool) {
+	s := createNewJsonString(data, collapse, addColor).String()
 	_, err := os.Stdout.WriteString(s)
 	CheckError(err)
 
 }
 
-func createNewJsonString(data []byte, collapse bool) *bytes.Buffer {
+func createNewJsonString(data []byte, collapse bool, addColor bool) *bytes.Buffer {
 	prettyJSON := new(bytes.Buffer)
 	if collapse {
 		err := json.Compact(prettyJSON, data)
 		CheckError(err)
 	} else {
-		err := json.Indent(prettyJSON, data, "", "    ")
-		CheckError(err)
+		if addColor {
+			err := ColorfulIndent(prettyJSON, data, "", "    ")
+			CheckError(err)
+		} else {
+			err := json.Indent(prettyJSON, data, "", "    ")
+			CheckError(err)
+		}
+
 	}
 	prettyJSON.Write([]byte(LineBreak))
 	return prettyJSON
