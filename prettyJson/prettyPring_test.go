@@ -20,7 +20,7 @@ func TestCollapse(t *testing.T) {
 	}
 
 	collapsedString := strings.Trim(string(collapsedFileContents), " \r\n")
-	collapsedJson := strings.Trim(createNewJsonString([]byte(prettyString), true).String(), " \r\n")
+	collapsedJson := strings.Trim(createNewJsonString([]byte(prettyString), true, false).String(), " \r\n")
 
 	if collapsedString != collapsedJson {
 		t.Fatal(fmt.Sprintf("No match: %s, %s", string(collapsedFileContents), collapsedJson))
@@ -40,7 +40,7 @@ func TestPretty(t *testing.T) {
 	}
 
 	trimmedCollapsedJson := strings.Trim(string(testJson), " \r\n")
-	prettyJson := strings.Trim(createNewJsonString([]byte(trimmedCollapsedJson), false).String(), " \r\n")
+	prettyJson := strings.Trim(createNewJsonString([]byte(trimmedCollapsedJson), false, false).String(), " \r\n")
 
 	if trimmedPrettyJson != prettyJson {
 		t.Fatal(fmt.Sprintf("No match: %s, %s", trimmedPrettyJson, prettyJson))
